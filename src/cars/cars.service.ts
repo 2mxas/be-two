@@ -20,8 +20,8 @@ export class CarsService {
     private readonly carsModel: Model<Car>,
   ) {}
 
-  async findAll() {
-    return this.carsModel.find();
+  async findAll(limit: number, skip: number) {
+    return this.carsModel.find().limit(limit).skip(skip);
   }
 
   async findOne(id: string) {
@@ -36,6 +36,10 @@ export class CarsService {
     }
 
     return car;
+  }
+
+  async searchByName(q: string) {
+    return this.carsModel.find({ nombre: { $regex: q, $options: 'i' } });
   }
 
   async create(createCarDto: CreateCarDto) {

@@ -4,8 +4,10 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ParseMongoIdPipe } from '../common/pipes/parse-mongo-id.pipe';
 import { CarsService } from './cars.service';
@@ -17,13 +19,23 @@ export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
   @Get()
-  findAll() {
-    return this.carsService.findAll();
+  findAll(
+    @Query('limit', ParseIntPipe) limit: number = 10,
+    @Query('skip', ParseIntPipe) skip: number = 0,
+  ) {
+    return this.carsService.findAll(+limit, +skip);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.carsService.findOne(id);
+  }
+
+  @Get('search')
+  searchByName(
+    @Query('q') q: string = 'mcqueen',
+  ) {
+    return this.carsService.searchByName(q);
   }
 
   @Post()
